@@ -1,0 +1,21 @@
+<nav class="navbar">
+  <div class="container nav-container">
+    <a routerLink="/" class="logo">BIG SHOT EVENTS</a>
+    <div class="nav-links">
+      <a routerLink="/home" routerLinkActive="active">Événements</a>
+      <a routerLink="/category/gala" routerLinkActive="active">Gala</a>
+      <a routerLink="/category/culture" routerLinkActive="active">Culture</a>
+      <a routerLink="/contact" routerLinkActive="active">Contact</a>
+      @if (auth.currentUser()) {
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/wallet" routerLinkActive="active">Mes billets</a>
+        <button class="btn-logout" (click)="auth.logout()">Déconnexion</button>
+      } @else {
+        <a routerLink="/login" class="btn-reserver">RÉSERVER</a>
+      }
+      <button class="theme-toggle" (click)="theme.toggle()">
+        {{ theme.isDark() ? '☀️' : '🌙' }}
+      </button>
+    </div>
+  </div>
+</nav>
