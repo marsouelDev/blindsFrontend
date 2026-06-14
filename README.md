@@ -222,3 +222,4 @@ Ce projet est sous licence MIT.
 - Bootstrap pour le framework CSS
 - RemixIcons pour les icônes magnifiques
 - L'équipe Django REST Framework pour l'API backend
+"# blindsFrontend" 
