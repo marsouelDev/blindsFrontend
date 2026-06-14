@@ -1,0 +1,129 @@
+<div class="create-container">
+  <div class="create-header">
+    <h1>Créer un événement</h1>
+    <p>Remplissez les informations ci-dessous pour créer votre événement</p>
+  </div>
+
+  <div class="steps-indicator">
+    <div class="step" [class.active]="currentStep === 1">
+      <span>1</span> Informations
+    </div>
+    <div class="step" [class.active]="currentStep === 2">
+      <span>2</span> Billets
+    </div>
+    <div class="step" [class.active]="currentStep === 3">
+      <span>3</span> Publication
+    </div>
+  </div>
+
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <!-- Step 1: Event Info -->
+    <div class="form-section" *ngIf="currentStep === 1">
+      <h2>Informations de l'événement</h2>
+
+      <div class="form-group">
+        <label>Titre de l'événement *</label>
+        <input type="text" formControlName="title" placeholder="Ex: Concert Jazz 2024">
+      </div>
+
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea formControlName="description" rows="5" placeholder="Décrivez votre événement..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Lieu *</label>
+          <input type="text" formControlName="location" placeholder="Ex: Palais des Congrès, Yaoundé">
+        </div>
+        <div class="form-group">
+          <label>Capacité *</label>
+          <input type="number" formControlName="capacity" min="1" placeholder="Nombre de places">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date *</label>
+          <input type="date" formControlName="date">
+        </div>
+        <div class="form-group">
+          <label>Heure *</label>
+          <input type="time" formControlName="time">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Catégorie</label>
+        <select formControlName="category_id">
+          <option [value]="null">Sélectionnez une catégorie</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        </select>
+      </div>
+
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="is_online">
+          Événement en ligne
+        </label>
+      </div>
+
+      <div class="form-group" *ngIf="eventForm.get('is_online')?.value">
+        <label>Lien de l'événement</label>
+        <input type="url" formControlName="online_link" placeholder="https://...">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-next" (click)="nextStep()">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Ticket Types -->
+   <div class="ticket-types-list" *ngIf="ticketTypes.length > 0">
+  <div *ngFor="let ticket of ticketTypes.controls; let i = index" [formGroupName]="i" class="ticket-type-card">
+    <div class="ticket-header">
+      <h3>Billet {{ i + 1 }}</h3>
+      <button type="button" class="btn-remove" (click)="removeTicketType(i)">×</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nom du billet</label>
+        <input type="text" formControlName="name" placeholder="Ex: Standard, VIP">
+      </div>
+      <div class="form-group">
+        <label>Prix (XAF)</label>
+        <input type="number" formControlName="price" min="0">
+      </div>
+      <div class="form-group">
+        <label>Quantité</label>
+        <input type="number" formControlName="quantity" min="1">
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- Step 3: Publish -->
+    <div class="form-section" *ngIf="currentStep === 3">
+      <h2>Publication</h2>
+
+      <div class="publish-options">
+        <div class="option-card" (click)="eventForm.patchValue({ status: 'draft' })" [class.selected]="eventForm.get('status')?.value === 'draft'">
+          <span>📝</span>
+          <h3>Brouillon</h3>
+          <p>Sauvegarder comme brouillon, publication plus tard</p>
+        </div>
+        <div class="option-card" (click)="eventForm.patchValue({ status: 'published' })" [class.selected]="eventForm.get('status')?.value === 'published'">
+          <span>🚀</span>
+          <h3>Publier maintenant</h3>
+          <p>L'événement sera visible immédiatement</p>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-prev" (click)="prevStep()">← Précédent</button>
+        <button type="submit" class="btn-submit" [disabled]="isLoading">
+          {{ isLoading ? 'Création...' : 'Créer l\'événement' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

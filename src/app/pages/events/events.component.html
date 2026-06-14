@@ -1,0 +1,96 @@
+<div class="events-container">
+  <div class="events-header">
+    <h1>Événements</h1>
+    <p>Découvrez notre sélection exclusive d'événements prestigieux</p>
+  </div>
+
+  <div class="filters-section">
+    <div class="search-bar">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Rechercher un événement..."
+        class="search-input">
+      <button class="search-btn" (click)="onSearch()">🔍 Rechercher</button>
+      <button class="filter-toggle" (click)="showFilters = !showFilters">
+        {{ showFilters ? '▲ Masquer filtres' : '▼ Afficher filtres' }}
+      </button>
+    </div>
+
+    <div class="filters-panel" *ngIf="showFilters">
+      <div class="filter-group">
+        <label>Catégorie</label>
+        <div class="category-chips">
+          <button class="chip" [class.active]="selectedCategory === ''" (click)="onCategoryChange('')">Toutes</button>
+          <button *ngFor="let cat of categories" class="chip" [class.active]="selectedCategory === cat.slug" (click)="onCategoryChange(cat.slug)">{{ cat.name }}</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Type d'événement</label>
+        <div class="type-buttons">
+          <button class="type-btn" [class.active]="isOnline === null" (click)="onOnlineFilterChange(null)">Tous</button>
+          <button class="type-btn" [class.active]="isOnline === false" (click)="onOnlineFilterChange(false)">📍 Présentiel</button>
+          <button class="type-btn" [class.active]="isOnline === true" (click)="onOnlineFilterChange(true)">💻 En ligne</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-count" *ngIf="!isLoading">
+    <span>{{ totalCount }} événement{{ totalCount > 1 ? 's' : '' }} trouvé{{ totalCount > 1 ? 's' : '' }}</span>
+  </div>
+
+  <div class="events-grid" *ngIf="!isLoading && events.length > 0; else empty">
+    <div class="event-card" *ngFor="let event of events">
+      <div class="event-image" [style.backgroundImage]="'url(' + (event.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800') + ')'">
+        <div class="event-overlay"></div>
+        <div class="event-badges">
+          <span class="event-category">{{ event.category?.name || 'ÉVÉNEMENT' }}</span>
+          <span class="event-status" [class]="getStatusClass(event.status)">{{ getStatusText(event.status) }}</span>
+        </div>
+      </div>
+      <div class="event-info">
+        <h3>{{ event.title }}</h3>
+        <div class="event-details">
+          <div class="detail"><span>📅</span> {{ event.date | date:'dd MMMM yyyy' }}</div>
+          <div class="detail"><span>⏰</span> {{ event.time }}</div>
+          <div class="detail"><span>📍</span> {{ event.location }}</div>
+          <div class="detail"><span>🎫</span> {{ event.tickets_sold }}/{{ event.capacity }} places</div>
+        </div>
+        <div class="event-footer">
+          <div class="availability-bar">
+            <div class="availability-fill" [style.width.%]="(event.tickets_sold / event.capacity) * 100"></div>
+          </div>
+          <div class="event-actions">
+            <a [routerLink]="['/events', event.id]" class="btn-detail">Voir détails</a>
+            <a *ngIf="event.status === 'published'" [routerLink]="['/events', event.id]" class="btn-reserve">Réserver</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <div class="empty-state" *ngIf="!isLoading">
+      <div class="empty-icon">🎉</div>
+      <h3>Aucun événement trouvé</h3>
+      <p>Essayez de modifier vos filtres ou revenez plus tard.</p>
+      <button class="btn-reset" (click)="clearFilters()">Réinitialiser les filtres</button>
+    </div>
+  </ng-template>
+
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Chargement des événements...</p>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoading && totalPages > 1">
+    <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">← Précédent</button>
+    <div class="page-numbers">
+      <button *ngFor="let page of [].constructor(totalPages); let i = index" class="page-num" [class.active]="currentPage === i + 1" (click)="goToPage(i + 1)">{{ i + 1 }}</button>
+    </div>
+    <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">Suivant →</button>
+  </div>
+</div>

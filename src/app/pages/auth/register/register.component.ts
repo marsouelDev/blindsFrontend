@@ -1,66 +1,58 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterModule, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
-import { inject } from '@angular/core';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-  
-  registerForm: FormGroup;
+  private notificationService = inject(NotificationService);
+
   isLoading = false;
 
-  constructor() {
-    this.registerForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      first_name: ['', [Validators.required]],
-      last_name: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      password2: ['', [Validators.required]],
-      role: ['participant', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
-  }
-
-  passwordMatchValidator(g: FormGroup) {
-    return g.get('password')?.value === g.get('password2')?.value
-      ? null
-      : { mismatch: true };
-  }
+  registerForm = this.fb.group({
+    username: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
+    first_name: ['', Validators.required],
+    last_name: ['', Validators.required],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    password2: ['', Validators.required],
+    role: ['participant', Validators.required]
+  });
 
   onSubmit() {
     if (this.registerForm.invalid) {
+      this.notificationService.showError('Veuillez remplir tous les champs correctement');
+      return;
+    }
+
+    if (this.registerForm.value.password !== this.registerForm.value.password2) {
+      this.notificationService.showError('Les mots de passe ne correspondent pas');
       return;
     }
 
     this.isLoading = true;
-    const registerData = {
-      ...this.registerForm.value
-    };
-
-    this.authService.register(registerData).subscribe({
+    this.authService.register(this.registerForm.value as any).subscribe({
       next: () => {
-        this.isLoading = false;
+        this.notificationService.showSuccess('Inscription réussie ! Bienvenue sur BlindEvents');
         this.router.navigate(['/dashboard']);
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
-        console.error('Registration error:', error);
+      },
+      complete: () => {
+        this.isLoading = false;
       }
     });
-  }
-
-  get f() {
-    return this.registerForm.controls;
   }
 }

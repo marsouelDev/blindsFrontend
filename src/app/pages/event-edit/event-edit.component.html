@@ -1,0 +1,120 @@
+<div class="edit-container" *ngIf="!isLoading && event; else loading">
+  <div class="edit-header">
+    <h1>Modifier l'événement</h1>
+    <p>{{ event.title }}</p>
+  </div>
+
+  <div class="status-bar">
+    <span class="status-label">Statut actuel:</span>
+    <span class="status-badge" [class]="event.status">
+      {{ event.status === 'published' ? 'Publié' : event.status === 'draft' ? 'Brouillon' : event.status === 'cancelled' ? 'Annulé' : 'Terminé' }}
+    </span>
+    <div class="status-actions" *ngIf="event.status === 'draft'">
+      <button class="btn-publish" (click)="publishEvent()">📢 Publier l'événement</button>
+    </div>
+    <div class="status-actions" *ngIf="event.status === 'published'">
+      <button class="btn-cancel" (click)="cancelEvent()">❌ Annuler l'événement</button>
+    </div>
+  </div>
+
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <div class="form-section">
+      <h2>Informations générales</h2>
+
+      <div class="form-group">
+        <label>Titre *</label>
+        <input type="text" formControlName="title">
+      </div>
+
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea formControlName="description" rows="5"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Lieu *</label>
+          <input type="text" formControlName="location">
+        </div>
+        <div class="form-group">
+          <label>Capacité *</label>
+          <input type="number" formControlName="capacity" min="1">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date *</label>
+          <input type="date" formControlName="date">
+        </div>
+        <div class="form-group">
+          <label>Heure *</label>
+          <input type="time" formControlName="time">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Catégorie</label>
+        <select formControlName="category_id">
+          <option [value]="null">Aucune catégorie</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        </select>
+      </div>
+
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="is_online">
+          Événement en ligne
+        </label>
+      </div>
+
+      <div class="form-group" *ngIf="eventForm.get('is_online')?.value">
+        <label>Lien de l'événement</label>
+        <input type="url" formControlName="online_link" placeholder="https://...">
+      </div>
+
+      <div class="form-group">
+        <label>Statut</label>
+        <select formControlName="status">
+          <option value="draft">Brouillon</option>
+          <option value="published">Publié</option>
+          <option value="cancelled">Annulé</option>
+          <option value="ended">Terminé</option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel-form" routerLink="/events/{{eventId}}">Annuler</button>
+        <button type="submit" class="btn-save" [disabled]="isSaving">
+          {{ isSaving ? 'Sauvegarde...' : 'Sauvegarder les modifications' }}
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <div class="tickets-section">
+    <h2>Types de billets</h2>
+    <div class="tickets-list" *ngIf="ticketTypes.length > 0; else noTickets">
+      <div class="ticket-item" *ngFor="let ticket of ticketTypes">
+        <div class="ticket-info">
+          <strong>{{ ticket.name }}</strong>
+          <span>{{ ticket.price | number }} XAF</span>
+          <span>{{ ticket.quantity }} disponibles</span>
+          <span>{{ ticket.remaining }} restants</span>
+        </div>
+        <div class="ticket-actions">
+          <a [routerLink]="['/ticket-types', ticket.id, 'edit']" class="btn-edit-ticket">Modifier</a>
+        </div>
+      </div>
+    </div>
+    <ng-template #noTickets>
+      <p>Aucun type de billet défini</p>
+    </ng-template>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+  </div>
+</ng-template>

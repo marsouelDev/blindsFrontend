@@ -1,0 +1,103 @@
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h1>Paiement</h1>
+    <div class="steps">
+      <div class="step" [class.active]="step >= 1">
+        <span class="step-number">1</span>
+        <span class="step-label">RÉCAPITULATIF</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" [class.active]="step >= 2">
+        <span class="step-number">2</span>
+        <span class="step-label">PAIEMENT</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" [class.active]="step >= 3">
+        <span class="step-number">3</span>
+        <span class="step-label">CONFIRMATION</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkout-content">
+    <div class="payment-section" *ngIf="step === 1">
+      <h2>Choisissez votre mode de paiement</h2>
+      <p class="secure-text">Transactions sécurisées via nos partenaires certifiés au Cameroun.</p>
+
+      <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+        <div class="payment-methods">
+          <label class="payment-option" [class.selected]="checkoutForm.get('payment_method')?.value === 'orange_money'">
+            <input type="radio" formControlName="payment_method" value="orange_money" (change)="onPaymentMethodChange()">
+            <div class="payment-icon">🟠</div>
+            <div class="payment-info">
+              <strong>Orange Money</strong>
+              <span>Le moyen le plus rapide. Validation instantanée de vos billets.</span>
+              <span class="fee">Frais: 0 XAF</span>
+            </div>
+          </label>
+
+          <label class="payment-option" [class.selected]="checkoutForm.get('payment_method')?.value === 'mtn_momo'">
+            <input type="radio" formControlName="payment_method" value="mtn_momo" (change)="onPaymentMethodChange()">
+            <div class="payment-icon">🟡</div>
+            <div class="payment-info">
+              <strong>MTN MoMo</strong>
+              <span>Payez en toute simplicité avec votre compte Mobile Money.</span>
+              <span class="fee">Frais: 0 XAF</span>
+            </div>
+          </label>
+
+          <label class="payment-option" [class.selected]="checkoutForm.get('payment_method')?.value === 'card'">
+            <input type="radio" formControlName="payment_method" value="card" (change)="onPaymentMethodChange()">
+            <div class="payment-icon">💳</div>
+            <div class="payment-info">
+              <strong>Carte Bancaire</strong>
+              <span>Visa, Mastercard et cartes locales GIMAC acceptées.</span>
+              <span class="fee">Traitement: 24h</span>
+            </div>
+          </label>
+
+          <label class="payment-option" [class.selected]="checkoutForm.get('payment_method')?.value === 'ussd'">
+            <input type="radio" formControlName="payment_method" value="ussd" (change)="onPaymentMethodChange()">
+            <div class="payment-icon">📱</div>
+            <div class="payment-info">
+              <strong>Code USSD</strong>
+              <span>Composez un code court pour valider sans internet.</span>
+              <span class="fee">Tous réseaux</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="checkoutForm.get('payment_method')?.value === 'orange_money' || checkoutForm.get('payment_method')?.value === 'mtn_momo'">
+          <label>Numéro de téléphone</label>
+          <input type="tel" formControlName="phone_number" placeholder="699000000">
+          <div class="error" *ngIf="checkoutForm.get('phone_number')?.invalid && checkoutForm.get('phone_number')?.touched">
+            Numéro invalide (9 chiffres)
+          </div>
+        </div>
+
+        <div class="total-section">
+          <span>TOTAL À PAYER</span>
+          <strong>{{ totalAmount | number }} XAF</strong>
+        </div>
+
+        <div class="buttons">
+          <button type="button" class="btn-back" routerLink="/cart">RETOUR AU PANIER</button>
+          <button type="submit" class="btn-pay" [disabled]="checkoutForm.invalid">PAYER MAINTENANT</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="loading-section" *ngIf="step === 2">
+      <div class="spinner"></div>
+      <h3>Traitement du paiement...</h3>
+      <p>Veuillez ne pas fermer cette page</p>
+    </div>
+
+    <div class="success-section" *ngIf="step === 3">
+      <div class="success-icon">✅</div>
+      <h2>Paiement réussi !</h2>
+      <p>Vos billets ont été générés et sont disponibles dans votre portefeuille.</p>
+      <button class="btn-wallet" routerLink="/wallet">Voir mes billets</button>
+    </div>
+  </div>
+</div>

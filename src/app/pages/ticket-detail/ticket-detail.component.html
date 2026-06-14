@@ -1,0 +1,64 @@
+<div class="ticket-container" *ngIf="!isLoading && ticket; else loading">
+  <div class="ticket-card">
+    <div class="ticket-header">
+      <h1>BIG SHOT EVENTS</h1>
+      <div class="ticket-badge" [class]="ticket.status === 'confirmed' ? 'confirmed' : ''">
+        {{ ticket.status === 'confirmed' ? 'CONFIRMÉ' : ticket.status }}
+      </div>
+    </div>
+
+    <div class="ticket-body">
+      <h2>{{ ticket.event_title }}</h2>
+      <div class="ticket-info">
+        <div class="info-row">
+          <span>📅 Date</span>
+          <strong>{{ ticket.event_date | date:'dd MMMM yyyy' }}</strong>
+        </div>
+        <div class="info-row">
+          <span>⏰ Heure</span>
+          <strong>{{ ticket.event_time }}</strong>
+        </div>
+        <div class="info-row">
+          <span>📍 Lieu</span>
+          <strong>{{ ticket.event_location }}</strong>
+        </div>
+        <div class="info-row">
+          <span>👤 Bénéficiaire</span>
+          <strong>{{ ticket.user_name }}</strong>
+        </div>
+        <div class="info-row">
+          <span>🎟️ Billets</span>
+          <strong>
+            <span *ngFor="let item of ticket.items">
+              {{ item.ticket_type_name }} x{{ item.quantity }}
+            </span>
+          </strong>
+        </div>
+        <div class="info-row">
+          <span>💰 Montant</span>
+          <strong>{{ ticket.total_amount | number }} XAF</strong>
+        </div>
+      </div>
+
+      <div class="qr-code">
+        <img [src]="'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + qrCodeData" alt="QR Code">
+        <p class="ref">{{ ticket.payment_ref }}</p>
+      </div>
+
+      <div class="ticket-footer">
+        <span>Code vestimentaire: Tenue de soirée exigée</span>
+        <span>Parking VIP sécurisé</span>
+      </div>
+    </div>
+
+    <div class="ticket-actions">
+      <button class="btn-download" (click)="downloadTicket()">📥 Télécharger le billet</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+  </div>
+</ng-template>

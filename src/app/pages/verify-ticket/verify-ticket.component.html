@@ -1,0 +1,34 @@
+<div class="verify-container">
+  <div class="verify-card">
+    <h1>Vérifier un billet</h1>
+    <p>Entrez la référence du billet pour vérifier sa validité</p>
+
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="paymentRef"
+        placeholder="Ex: BSE-XXXXXXXXXX"
+        (keyup.enter)="verifyTicket()">
+      <button (click)="verifyTicket()" [disabled]="isLoading">
+        {{ isLoading ? 'Vérification...' : 'Vérifier' }}
+      </button>
+    </div>
+
+    <div class="result" *ngIf="ticketInfo">
+      <div class="success-icon">✅</div>
+      <h2>Billet Valide</h2>
+      <div class="ticket-details">
+        <p><strong>Événement:</strong> {{ ticketInfo.event }}</p>
+        <p><strong>Bénéficiaire:</strong> {{ ticketInfo.user }}</p>
+        <p><strong>Date:</strong> {{ ticketInfo.date | date:'dd MMMM yyyy' }}</p>
+        <p><strong>Montant:</strong> {{ ticketInfo.total_amount | number }} XAF</p>
+      </div>
+    </div>
+
+    <div class="error-result" *ngIf="error">
+      <div class="error-icon">❌</div>
+      <h2>Billet Invalide</h2>
+      <p>{{ error }}</p>
+    </div>
+  </div>
+</div>

@@ -1,232 +1,96 @@
-<div class="home-page">
-  <app-navbar></app-navbar>
-
+<div class="home-container">
   <!-- Hero Section -->
   <section class="hero">
-    <div class="hero-background">
-      <div class="hero-gradient"></div>
-      <div class="hero-pattern"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">L'excellence au service de vos événements</h1>
+      <p class="hero-subtitle">
+        Découvrez une sélection exclusive de cérémonies, galas et événements culturels au Cameroun.<br>
+        Paiements sécurisés via Orange Money & MTN MoMo.
+      </p>
+      <div class="hero-buttons">
+        <a routerLink="/events" class="btn-primary">Explorer les Galas</a>
+        <a href="#contact" class="btn-secondary">Nous contacter</a>
+      </div>
     </div>
-    <div class="hero-container">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <i class="ri-sparkling-line"></i>
-          <span>La plateforme #1 d'événements en Afrique</span>
+  </section>
+
+  <!-- Events Section -->
+  <section class="events-section">
+    <div class="section-header">
+      <h2>Prochains Événements</h2>
+      <a routerLink="/events" class="view-all">Voir tout →</a>
+    </div>
+
+    <div class="events-grid" *ngIf="events.length > 0; else loading">
+      <div class="event-card" *ngFor="let event of events.slice(0, 3)">
+        <div class="event-image" [style.backgroundImage]="'url(' + (event.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800') + ')'">
+          <div class="event-overlay"></div>
+          <span class="event-category">{{ event.category?.name || 'Événement' }}</span>
         </div>
-        <h1 class="hero-title">
-          <span class="title-line">Découvrez des</span>
-          <span class="title-line title-highlight">Événements</span>
-          <span class="title-line">Inoubliables</span>
-        </h1>
-        <p class="hero-description">
-          Concerts, conférences, festivals et bien plus encore. Réservez vos places en quelques clics et vivez
-          l'expérience BlindEvents.
-        </p>
-        <div class="hero-actions">
-          <a routerLink="/events" class="btn btn-primary btn-lg">
-            <i class="ri-search-line"></i>
-            Explorer les événements
-          </a>
-          <a routerLink="/register" class="btn btn-secondary btn-lg" *ngIf="!isAuthenticated">
-            <i class="ri-user-add-line"></i>
-            Créer un compte
-          </a>
-        </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <div class="stat-value">10K+</div>
-            <div class="stat-label">Événements</div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <div class="stat-value">50K+</div>
-            <div class="stat-label">Utilisateurs</div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <div class="stat-value">100K+</div>
-            <div class="stat-label">Billets vendus</div>
-          </div>
+        <div class="event-info">
+          <h3>{{ event.title }}</h3>
+          <p class="event-location">{{ event.location }}</p>
+          <p class="event-date">{{ event.date | date:'dd MMMM yyyy' }}</p>
+          <a [routerLink]="['/events', event.id]" class="btn-outline">Réserver un billet</a>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-card hero-card-1">
-          <div class="card-icon">
-            <i class="ri-music-2-line"></i>
-          </div>
-          <div class="card-info">
-            <span class="card-category">Concert</span>
-            <span class="card-title">Festival Afro</span>
-          </div>
+    </div>
+    <ng-template #loading>
+      <div class="loading-spinner">Chargement des événements...</div>
+    </ng-template>
+  </section>
+
+  <!-- Organization Section -->
+  <section class="organization-section">
+    <div class="organization-content">
+      <h2>Organisez Votre Prochain Événement</h2>
+      <p>De la conception à la réalisation, nous donnons vie à vos visions les plus ambitieuses avec une précision millimétrée.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">⭐</div>
+          <h4>Prestige Garantie</h4>
+          <p>Gestion VIP et service exclusif</p>
         </div>
-        <div class="hero-card hero-card-2">
-          <div class="card-icon">
-            <i class="ri-mic-line"></i>
-          </div>
-          <div class="card-info">
-            <span class="card-category">Conférence</span>
-            <span class="card-title">Tech Summit</span>
-          </div>
-        </div>
-        <div class="hero-card hero-card-3">
-          <div class="card-icon">
-            <i class="ri-basketball-line"></i>
-          </div>
-          <div class="card-info">
-            <span class="card-category">Sport</span>
-            <span class="card-title">Championnat</span>
-          </div>
+        <div class="feature">
+          <div class="feature-icon">💳</div>
+          <h4>Paiement Simple</h4>
+          <p>Mobile Money ,Orange Money& Cartes acceptées</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Featured Events Section -->
-  <section class="featured-section">
-    <div class="section-container">
-      <div class="section-header">
-        <div class="section-header-content">
-          <h2 class="section-title">Événements à la une</h2>
-          <p class="section-subtitle">Les meilleurs événements sélectionnés pour vous</p>
-        </div>
-        <a routerLink="/events" class="view-all-btn">
-          Voir tous
-          <i class="ri-arrow-right-line"></i>
-        </a>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Big Shot Events</h3>
+        <p>L'excellence événementielle au Cameroun. Créateur de moments inoubliables pour l'élite.</p>
       </div>
-
-      <div class="events-grid" *ngIf="!isLoading && featuredEvents.length > 0">
-        <div class="event-card" *ngFor="let event of featuredEvents">
-          <div class="event-image-wrapper">
-            <div class="event-image"
-              [style.background-image]="'url(' + (event.image || 'https://via.placeholder.com/400x300?text=Event') + ')'">
-              <div class="event-badge" *ngIf="event.category">
-                {{ event.category.name }}
-              </div>
-              <div class="event-overlay">
-                <button class="event-favorite">
-                  <i class="ri-heart-line"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="event-details">
-            <div class="event-meta">
-              <span class="event-date">
-                <i class="ri-calendar-line"></i>
-                {{ event.date | date:'shortDate' }}
-              </span>
-              <span class="event-location">
-                <i class="ri-map-pin-line"></i>
-                {{ event.location }}
-              </span>
-            </div>
-            <h3 class="event-title">{{ event.title }}</h3>
-            <div class="event-footer">
-              <span class="event-price">
-                {{ event.price ? event.price + ' FCFA' : 'Gratuit' }}
-              </span>
-              <a routerLink="/events/{{ event.id }}" class="event-btn">
-                Réserver
-              </a>
-            </div>
-          </div>
+      <div class="footer-links">
+        <div>
+          <h4>Navigation</h4>
+          <a routerLink="/about">À propos</a>
+          <a routerLink="/events">Événements</a>
+          <a routerLink="/contact">Contact</a>
         </div>
-      </div>
-
-      <div class="loading-state" *ngIf="isLoading">
-        <div class="spinner"></div>
-        <p>Chargement des événements...</p>
-      </div>
-
-      <div class="empty-state" *ngIf="!isLoading && featuredEvents.length === 0">
-        <i class="ri-calendar-event-line"></i>
-        <p>Aucun événement disponible pour le moment.</p>
-        <a routerLink="/events" class="btn btn-primary">
-          Explorer tous les événements
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="features-section">
-    <div class="section-container">
-      <div class="section-header-center">
-        <h2 class="section-title">Pourquoi choisir BlindEvents ?</h2>
-        <p class="section-subtitle">Une expérience utilisateur exceptionnelle</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <i class="ri-calendar-check-line"></i>
-          </div>
-          <h3 class="feature-title">Événements variés</h3>
-          <p class="feature-description">
-            Accédez à une large gamme d'événements : concerts, conférences, festivals, et plus encore.
-          </p>
+        <div>
+          <h4>Support</h4>
+          <a routerLink="/faq">FAQ</a>
+          <a routerLink="/privacy">Confidentialité</a>
+          <a routerLink="/terms">Conditions Générales</a>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <i class="ri-secure-payment-line"></i>
-          </div>
-          <h3 class="feature-title">Paiement sécurisé</h3>
-          <p class="feature-description">
-            Payez en toute sécurité avec Orange Money, MTN Mobile Money ou carte bancaire.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <i class="ri-smartphone-line"></i>
-          </div>
-          <h3 class="feature-title">Billets digitaux</h3>
-          <p class="feature-description">
-            Recevez vos billets instantanément sur votre téléphone. Plus besoin d'imprimer.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon-wrapper">
-            <i class="ri-customer-service-2-line"></i>
-          </div>
-          <h3 class="feature-title">Support 24/7</h3>
-          <p class="feature-description">
-            Notre équipe est disponible à tout moment pour vous aider en cas de besoin.
-          </p>
+        <div>
+          <h4>Contact</h4>
+          <p>Douala, Akwa - Blvd de la Liberté</p>
+          <p>Yaoundé, Bastos - Avenue akwa</p>
+          <p>contactbigshotevents.com</p>
+          <p>+237 600 000 000</p>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <div class="cta-container">
-      <div class="cta-content">
-        <div class="cta-badge">
-          <i class="ri-rocket-line"></i>
-          <span>Commencez maintenant</span>
-        </div>
-        <h2 class="cta-title">Prêt à découvrir votre prochain événement ?</h2>
-        <p class="cta-description">
-          Rejoignez des milliers d'utilisateurs qui réservent leurs événements sur BlindEvents.
-        </p>
-        <div class="cta-actions">
-          <a routerLink="/register" class="btn btn-primary btn-lg" *ngIf="!isAuthenticated">
-            <i class="ri-user-add-line"></i>
-            Créer un compte gratuit
-          </a>
-          <a routerLink="/events" class="btn btn-secondary btn-lg" *ngIf="isAuthenticated">
-            <i class="ri-search-line"></i>
-            Explorer les événements
-          </a>
-        </div>
-      </div>
-      <div class="cta-visual">
-        <div class="cta-circle cta-circle-1"></div>
-        <div class="cta-circle cta-circle-2"></div>
-        <div class="cta-circle cta-circle-3"></div>
-      </div>
+    <div class="footer-bottom">
+      <p>© 2024 Big Shot Events. Toute reproduction interdite au Cameroun.</p>
     </div>
-  </section>
-
-  <app-footer></app-footer>
+  </footer>
 </div>

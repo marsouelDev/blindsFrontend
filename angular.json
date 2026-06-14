@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "frontend_blindsevent:build:production"
+              "buildTarget": "blindsfrontend:build:production"
             },
             "development": {
-              "buildTarget": "frontend_blindsevent:build:development"
+              "buildTarget": "blindsfrontend:build:development"
             }
           },
           "defaultConfiguration": "development"

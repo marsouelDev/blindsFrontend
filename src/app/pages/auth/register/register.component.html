@@ -1,161 +1,80 @@
-<div class="register-page min-vh-100 d-flex align-items-center justify-content-center bg-light py-5">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
-        <div class="card shadow-lg">
-          <div class="card-body p-5">
-            <div class="text-center mb-4">
-              <i class="ri-calendar-event-line text-primary" style="font-size: 3rem;"></i>
-              <h2 class="mt-3">Créer un compte</h2>
-              <p class="text-muted">Rejoignez BlindEvents dès maintenant</p>
-            </div>
+<div class="register-container">
+  <div class="register-card">
+    <div class="logo">
+      <h1>Blind'Events</h1>
+      <p>Rejoignez l'Excellence</p>
+      <span>Créez votre compte pour accéder aux événements les plus prestigieux du Cameroun.</span>
+    </div>
 
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="first_name" class="form-label">
-                    <i class="ri-user-line me-2"></i>Prénom
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="first_name"
-                    formControlName="first_name"
-                    placeholder="Votre prénom"
-                    [class.is-invalid]="f['first_name'].invalid && f['first_name'].touched"
-                  >
-                  <div class="invalid-feedback" *ngIf="f['first_name'].invalid && f['first_name'].touched">
-                    Le prénom est requis
-                  </div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                  <label for="last_name" class="form-label">
-                    <i class="ri-user-line me-2"></i>Nom
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="last_name"
-                    formControlName="last_name"
-                    placeholder="Votre nom"
-                    [class.is-invalid]="f['last_name'].invalid && f['last_name'].touched"
-                  >
-                  <div class="invalid-feedback" *ngIf="f['last_name'].invalid && f['last_name'].touched">
-                    Le nom est requis
-                  </div>
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="username" class="form-label">
-                  <i class="ri-user-line me-2"></i>Nom d'utilisateur
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="username"
-                  formControlName="username"
-                  placeholder="Choisissez un nom d'utilisateur"
-                  [class.is-invalid]="f['username'].invalid && f['username'].touched"
-                >
-                <div class="invalid-feedback" *ngIf="f['username'].invalid && f['username'].touched">
-                  Le nom d'utilisateur doit contenir au moins 3 caractères
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="email" class="form-label">
-                  <i class="ri-mail-line me-2"></i>Email
-                </label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  formControlName="email"
-                  placeholder="votre@email.com"
-                  [class.is-invalid]="f['email'].invalid && f['email'].touched"
-                >
-                <div class="invalid-feedback" *ngIf="f['email'].invalid && f['email'].touched">
-                  Veuillez entrer une adresse email valide
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="role" class="form-label">
-                  <i class="ri-user-settings-line me-2"></i>Type de compte
-                </label>
-                <select class="form-select" id="role" formControlName="role">
-                  <option value="participant">Participant</option>
-                  <option value="organizer">Organisateur</option>
-                </select>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="password" class="form-label">
-                    <i class="ri-lock-line me-2"></i>Mot de passe
-                  </label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    formControlName="password"
-                    placeholder="Min. 6 caractères"
-                    [class.is-invalid]="f['password'].invalid && f['password'].touched"
-                  >
-                  <div class="invalid-feedback" *ngIf="f['password'].invalid && f['password'].touched">
-                    Le mot de passe doit contenir au moins 6 caractères
-                  </div>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                  <label for="password2" class="form-label">
-                    <i class="ri-lock-line me-2"></i>Confirmer
-                  </label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="password2"
-                    formControlName="password2"
-                    placeholder="Confirmez le mot de passe"
-                    [class.is-invalid]="registerForm.errors?.['mismatch'] && f['password2'].touched"
-                  >
-                  <div class="invalid-feedback" *ngIf="registerForm.errors?.['mismatch']">
-                    Les mots de passe ne correspondent pas
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                class="btn btn-primary w-100 btn-lg"
-                [disabled]="isLoading || registerForm.invalid"
-              >
-                <span *ngIf="!isLoading">
-                  <i class="ri-user-add-line me-2"></i>Créer mon compte
-                </span>
-                <span *ngIf="isLoading">
-                  <i class="ri-loader-4-line me-2 spin-icon"></i>Création en cours...
-                </span>
-              </button>
-            </form>
-
-            <div class="text-center mt-4">
-              <p class="text-muted">
-                Vous avez déjà un compte ?
-                <a routerLink="/login" class="text-primary fw-bold">Se connecter</a>
-              </p>
-            </div>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" formControlName="first_name" placeholder="Ex: Marc">
+          <div class="error" *ngIf="registerForm.get('first_name')?.invalid && registerForm.get('first_name')?.touched">
+            Champ requis
           </div>
         </div>
-
-        <div class="text-center mt-3">
-          <a routerLink="/" class="text-muted">
-            <i class="ri-arrow-left-line me-1"></i>Retour à l'accueil
-          </a>
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" formControlName="last_name" placeholder="Ex: Mbarga">
+          <div class="error" *ngIf="registerForm.get('last_name')?.invalid && registerForm.get('last_name')?.touched">
+            Champ requis
+          </div>
         </div>
       </div>
-    </div>
+
+      <div class="form-group">
+        <label>Nom d'utilisateur</label>
+        <input type="text" formControlName="username" placeholder="@votre_nom">
+        <div class="error" *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+          Minimum 3 caractères
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" formControlName="email" placeholder="votre@email.com">
+        <div class="error" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          Email valide requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Votre Profil</label>
+        <div class="role-selector">
+          <button type="button" [class.active]="registerForm.get('role')?.value === 'participant'" (click)="registerForm.patchValue({ role: 'participant' })">
+            PARTICIPANT
+          </button>
+          <button type="button" [class.active]="registerForm.get('role')?.value === 'organizer'" (click)="registerForm.patchValue({ role: 'organizer' })">
+            ORGANISATEUR
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" formControlName="password" placeholder="Minimum 6 caractères">
+        <div class="error" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          Minimum 6 caractères
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" formControlName="password2">
+        <div class="error" *ngIf="registerForm.errors?.['mismatch']">
+          Les mots de passe ne correspondent pas
+        </div>
+      </div>
+
+      <button type="submit" class="btn-register" [disabled]="registerForm.invalid || isLoading">
+        {{ isLoading ? 'Inscription...' : 'Créer mon compte' }}
+      </button>
+    </form>
+
+    <p class="login-link">
+      Déjà inscrit ? <a routerLink="/login">Se connecter</a>
+    </p>
   </div>
 </div>

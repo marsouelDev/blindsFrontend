@@ -1,0 +1,175 @@
+<div class="event-detail-container" *ngIf="!isLoading && event; else loading">
+  <!-- Hero Section -->
+  <div class="event-hero" [style.backgroundImage]="'url(' + (event.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1920') + ')'">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="event-category">{{ event.category?.name || 'ÉVÉNEMENT' }}</div>
+      <h1>{{ event.title }}</h1>
+      <div class="event-meta">
+        <span>📅 {{ event.date | date:'dd MMMM yyyy' }}</span>
+        <span>⏰ {{ event.time }}</span>
+        <span>📍 {{ event.location }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="event-content">
+    <div class="main-info">
+      <!-- Description -->
+      <div class="description-section">
+        <h2>À propos de l'événement</h2>
+        <p>{{ event.description }}</p>
+      </div>
+
+      <!-- Additional Info -->
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>CODE VESTIMENTAIRE</h3>
+          <p>Cravate Noire / Tenue Traditionnelle de Gala</p>
+        </div>
+        <div class="info-card">
+          <h3>PARKING & ACCÈS</h3>
+          <p>Service de Valet & Parking VIP Sécurisé</p>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span>Disponibilité des places</span>
+          <span>{{ getProgressPercentage() | number:'1.0-0' }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+        </div>
+        <p class="progress-text">L'événement affiche presque complet.</p>
+      </div>
+    </div>
+
+    <!-- Ticket Selection Sidebar -->
+    <div class="ticket-sidebar" *ngIf="event.status === 'published'">
+      <h2>Sélectionner vos billets</h2>
+
+      <div class="ticket-types">
+        <div class="ticket-item" *ngFor="let ticket of event.ticket_types">
+          <div class="ticket-info">
+            <div class="ticket-name">{{ ticket.name }}</div>
+            <div class="ticket-price">{{ ticket.price | number }} XAF</div>
+            <div class="ticket-remaining">{{ ticket.remaining }} restants</div>
+          </div>
+         <div class="ticket-quantity">
+           <button (click)="updateQuantity(ticket.id, -1)" [disabled]="getQuantity(ticket.id) === 0">-</button>
+           <span>{{ getQuantity(ticket.id) }}</span>
+           <button (click)="updateQuantity(ticket.id, 1)" [disabled]="getQuantity(ticket.id) >= getMaxQuantity(ticket)">+</button>
+         </div>
+        </div>
+      </div>
+
+      <div class="total-section">
+        <div class="total-label">TOTAL</div>
+        <div class="total-amount">{{ totalAmount | number }} XAF</div>
+      </div>
+
+      <button class="btn-reserve" (click)="proceedToCheckout()" [disabled]="getTotalItems() === 0">
+        Commander mes billets
+      </button>
+
+      <p class="help-text">Besoin d'aide pour votre réservation ?<br>Contactez notre Conciergerie VIP</p>
+    </div>
+
+    <div class="ticket-sidebar" *ngIf="event.status !== 'published'">
+      <div class="event-status-message">
+        <span *ngIf="event.status === 'cancelled'">❌ Événement annulé</span>
+        <span *ngIf="event.status === 'draft'">📝 Événement en cours de préparation</span>
+        <span *ngIf="event.status === 'ended'">🏁 Événement terminé</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" *ngIf="showCheckout" (click)="cancelCheckout()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Paiement</h2>
+        <button class="close-btn" (click)="cancelCheckout()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="steps">
+          <span class="step active">1</span>
+          <span class="step-line"></span>
+          <span class="step">2</span>
+          <span class="step-line"></span>
+          <span class="step">3</span>
+        </div>
+        <div class="step-labels">
+          <span>RÉCAPITULATIF</span>
+          <span>PAIEMENT</span>
+          <span>CONFIRMATION</span>
+        </div>
+
+        <form [formGroup]="checkoutForm" (ngSubmit)="submitBooking()">
+          <h3>Choisissez votre mode de paiement</h3>
+          <p class="secure-text">Transactions sécurisées via nos partenaires certifiés au Cameroun.</p>
+
+          <div class="payment-methods">
+            <label class="payment-option" [class.selected]="checkoutForm.get('payment_method')?.value === 'orange_money'">
+              <input type="radio" formControlName="payment_method" value="orange_money" (change)="onPaymentMethodChange()">
+              <div class="payment-icon">🟠</div>
+              <div class="payment-info">
+                <strong>Orange Money</strong>
+                <span>Le moyen le plus rapide. Validation instantanée</span>
+                <span class="fee">Frais: 0 XAF</span>
+              </div>
+            </label>
+
+            <label class="payment-option" [class.selected]="checkoutForm.get('payment_method')?.value === 'mtn_momo'">
+              <input type="radio" formControlName="payment_method" value="mtn_momo" (change)="onPaymentMethodChange()">
+              <div class="payment-icon">🟡</div>
+              <div class="payment-info">
+                <strong>MTN MoMo</strong>
+                <span>Payez en toute simplicité</span>
+                <span class="fee">Frais: 0 XAF</span>
+              </div>
+            </label>
+
+            <label class="payment-option" [class.selected]="checkoutForm.get('payment_method')?.value === 'card'">
+              <input type="radio" formControlName="payment_method" value="card" (change)="onPaymentMethodChange()">
+              <div class="payment-icon">💳</div>
+              <div class="payment-info">
+                <strong>Carte Bancaire</strong>
+                <span>Visa, Mastercard et cartes locales</span>
+                <span class="fee">Traitement: 24h</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group" *ngIf="checkoutForm.get('payment_method')?.value === 'orange_money' || checkoutForm.get('payment_method')?.value === 'mtn_momo'">
+            <label>Numéro de téléphone</label>
+            <input type="tel" formControlName="phone_number" placeholder="699000000">
+            <div class="error" *ngIf="checkoutForm.get('phone_number')?.invalid && checkoutForm.get('phone_number')?.touched">
+              Numéro invalide (9 chiffres)
+            </div>
+          </div>
+
+          <div class="total-payment">
+            <span>TOTAL À PAYER</span>
+            <strong>{{ totalAmount | number }} XAF</strong>
+          </div>
+
+          <div class="modal-buttons">
+            <button type="button" class="btn-back" (click)="cancelCheckout()">RETOUR AU PANIER</button>
+            <button type="submit" class="btn-pay" [disabled]="checkoutForm.invalid">PAYER MAINTENANT</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement de l'événement...</p>
+  </div>
+</ng-template>

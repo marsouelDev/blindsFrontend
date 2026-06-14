@@ -1,0 +1,105 @@
+.verify-container {
+  min-height: calc(100vh - 60px);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.verify-card {
+  max-width: 500px;
+  width: 100%;
+  background: var(--surface-container);
+  border-radius: 10px;
+  padding: 40px;
+  border: 1px solid var(--surface-container-high);
+  text-align: center;
+}
+
+.verify-card h1 {
+  font-family: 'EB Garamond', serif;
+  font-size: 28px;
+  color: var(--on-surface);
+  margin-bottom: 8px;
+}
+
+.verify-card > p {
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface-variant);
+  margin-bottom: 32px;
+}
+
+.input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 14px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--surface-container-high);
+  border-radius: 10px;
+  color: var(--on-surface);
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.input-group button {
+  padding: 14px 24px;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  color: var(--on-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.result, .error-result {
+  margin-top: 32px;
+  padding: 24px;
+  border-radius: 10px;
+}
+
+.result {
+  background: var(--surface-container-low);
+  border: 1px solid var(--success);
+}
+
+.error-result {
+  background: var(--surface-container-low);
+  border: 1px solid var(--error);
+}
+
+.success-icon, .error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.result h2, .error-result h2 {
+  font-family: 'EB Garamond', serif;
+  margin-bottom: 16px;
+}
+
+.result h2 {
+  color: var(--success);
+}
+
+.error-result h2 {
+  color: var(--error);
+}
+
+.ticket-details {
+  text-align: left;
+}
+
+.ticket-details p {
+  margin-bottom: 8px;
+  font-family: 'Hanken Grotesk', sans-serif;
+}

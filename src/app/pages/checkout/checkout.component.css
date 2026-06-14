@@ -1,0 +1,300 @@
+.checkout-container {
+  min-height: calc(100vh - 60px);
+  background: var(--surface);
+  padding: 40px 24px;
+}
+
+.checkout-header {
+  max-width: 800px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.checkout-header h1 {
+  font-family: 'EB Garamond', serif;
+  font-size: 32px;
+  color: var(--on-surface);
+  margin-bottom: 32px;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-container-high);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}
+
+.step.active .step-number {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.step-label {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--on-surface-variant);
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: var(--surface-container-high);
+}
+
+.checkout-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.payment-section {
+  background: var(--surface-container);
+  border-radius: 10px;
+  padding: 32px;
+  border: 1px solid var(--surface-container-high);
+}
+
+.payment-section h2 {
+  font-family: 'EB Garamond', serif;
+  font-size: 24px;
+  color: var(--on-surface);
+  margin-bottom: 8px;
+}
+
+.secure-text {
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface-variant);
+  margin-bottom: 32px;
+}
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface-container-low);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-option.selected {
+  border-color: var(--primary);
+  background: var(--surface-container);
+}
+
+.payment-option input {
+  display: none;
+}
+
+.payment-icon {
+  font-size: 40px;
+}
+
+.payment-info {
+  flex: 1;
+}
+
+.payment-info strong {
+  display: block;
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface);
+  margin-bottom: 4px;
+}
+
+.payment-info span {
+  display: block;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+}
+
+.fee {
+  margin-top: 6px;
+  font-size: 11px !important;
+  color: var(--success) !important;
+}
+
+.form-group {
+  margin: 24px 0;
+}
+
+.form-group label {
+  display: block;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--on-surface-variant);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--surface-container-high);
+  border-radius: 7px;
+  color: var(--on-surface);
+  font-size: 16px;
+}
+
+.error {
+  color: var(--error);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: var(--surface-container-low);
+  border-radius: 10px;
+  margin: 24px 0;
+}
+
+.total-section span {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--on-surface-variant);
+}
+
+.total-section strong {
+  font-family: 'EB Garamond', serif;
+  font-size: 32px;
+  color: var(--primary);
+}
+
+.buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-back, .btn-pay {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--surface-container-high);
+  color: var(--on-surface);
+}
+
+.btn-pay {
+  background: var(--primary);
+  border: none;
+  color: var(--on-primary);
+}
+
+.btn-pay:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading-section {
+  text-align: center;
+  padding: 60px;
+  background: var(--surface-container);
+  border-radius: 10px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--surface-container-high);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 24px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-section h3 {
+  font-family: 'EB Garamond', serif;
+  margin-bottom: 8px;
+}
+
+.success-section {
+  text-align: center;
+  padding: 60px;
+  background: var(--surface-container);
+  border-radius: 10px;
+}
+
+.success-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.success-section h2 {
+  font-family: 'EB Garamond', serif;
+  color: var(--success);
+  margin-bottom: 16px;
+}
+
+.btn-wallet {
+  margin-top: 24px;
+  padding: 12px 32px;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  color: var(--on-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .steps {
+    gap: 10px;
+  }
+
+  .step-line {
+    width: 30px;
+  }
+
+  .payment-section {
+    padding: 20px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+}

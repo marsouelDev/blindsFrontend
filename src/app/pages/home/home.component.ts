@@ -1,45 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
-import { FooterComponent } from '../../shared/components/footer/footer.component';
-import { inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { RouterModule } from '@angular/router';
+import { EventService } from '../../core/services/event.service';
+import { Event } from '../../core/models/event.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, FooterComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
-  private authService = inject(AuthService);
-  private http = inject(HttpClient);
+export class HomeComponent implements OnInit, OnDestroy {
+  private eventService = inject(EventService);
+  events: Event[] = [];
+  private subscription?: Subscription;
 
-  get isAuthenticated() {
-    return this.authService.isAuthenticated;
-  }
-
-  featuredEvents: any[] = [];
-  isLoading = true;
-
-  constructor() {
-    this.loadFeaturedEvents();
-  }
-
-  loadFeaturedEvents() {
-    this.http.get(`${environment.apiUrl}/events/?limit=6`).subscribe({
-      next: (response: any) => {
-        this.featuredEvents = response.results || [];
-        this.isLoading = false;
+  ngOnInit() {
+    this.subscription = this.eventService.getEvents().subscribe({
+      next: (response) => {
+        this.events = response.results;
       },
-      error: (error: any) => {
-        console.error('Error loading featured events:', error);
-        this.isLoading = false;
+      error: (error) => {
+        console.error('Error loading events:', error);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 }

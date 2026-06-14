@@ -1,0 +1,111 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="profile-cover"></div>
+    <div class="profile-avatar">
+      <div class="avatar-large">
+        {{ currentUser?.first_name?.charAt(0) || currentUser?.username?.charAt(0) }}
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <div class="profile-actions">
+      <div class="user-badge">
+        <h1>{{ currentUser?.first_name }} {{ currentUser?.last_name }}</h1>
+        <span class="role-badge" [class.organizer]="isOrganizer">
+          {{ isOrganizer ? 'ORGANISATEUR' : 'PARTICIPANT' }}
+        </span>
+      </div>
+      <button class="btn-edit" (click)="toggleEdit()">
+        {{ isEditing ? 'Annuler' : 'Modifier le profil' }}
+      </button>
+    </div>
+
+    <div class="profile-stats" *ngIf="isOrganizer">
+      <div class="stat">
+        <span class="stat-value">24</span>
+        <span class="stat-label">ÉVÉNEMENTS</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">1.2k</span>
+        <span class="stat-label">INVITÉS</span>
+      </div>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" *ngIf="!isEditing; else editMode">
+      <div class="info-section">
+        <h3>Informations Personnelles</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>PRÉNOM</label>
+            <p>{{ currentUser?.first_name || '-' }}</p>
+          </div>
+          <div class="info-item">
+            <label>NOM</label>
+            <p>{{ currentUser?.last_name || '-' }}</p>
+          </div>
+          <div class="info-item">
+            <label>EMAIL</label>
+            <p>{{ currentUser?.email || '-' }}</p>
+          </div>
+          <div class="info-item">
+            <label>TÉLÉPHONE (+237)</label>
+            <p>{{ currentUser?.profile?.phone || 'Non renseigné' }}</p>
+          </div>
+          <div class="info-item full-width">
+            <label>BIOGRAPHIE</label>
+            <p>{{ currentUser?.profile?.bio || 'Aucune biographie' }}</p>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <ng-template #editMode>
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <div class="info-section">
+          <h3>Modifier mes informations</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>PRÉNOM</label>
+              <input type="text" formControlName="first_name">
+            </div>
+            <div class="info-item">
+              <label>NOM</label>
+              <input type="text" formControlName="last_name">
+            </div>
+            <div class="info-item">
+              <label>EMAIL</label>
+              <input type="email" formControlName="email">
+            </div>
+            <div class="info-item">
+              <label>TÉLÉPHONE (+237)</label>
+              <input type="tel" formControlName="phone" formGroupName="profile" placeholder="699000000">
+            </div>
+            <div class="info-item full-width">
+              <label>BIOGRAPHIE</label>
+              <textarea formControlName="bio" formGroupName="profile" rows="4" placeholder="Parlez-nous de vous..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="verification-section" *ngIf="isOrganizer">
+          <h3>Statut de vérification</h3>
+          <div class="verification-badges">
+            <span class="verified">✓ Identité vérifiée</span>
+            <span class="elite">⭐ Niveau Élite Big Shot</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <span class="last-modified">Dernière modification : {{ today | date:'dd/MM/yyyy' }}</span>
+          <div class="buttons">
+            <button type="button" class="btn-cancel" (click)="toggleEdit()">Annuler</button>
+            <button type="submit" class="btn-save" [disabled]="isLoading">
+              {{ isLoading ? 'Sauvegarde...' : 'Sauvegarder' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+  </div>
+</div>

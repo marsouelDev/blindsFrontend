@@ -1,52 +1,102 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { StatsService } from '../../core/services/stats.service';
+import { EventService } from '../../core/services/event.service';
+import { BookingService } from '../../core/services/booking.service';
 import { DashboardStats } from '../../core/models/stats.model';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { Event } from '../../core/models/event.model';
+import { Booking } from '../../core/models/booking.model';
+import { User } from '../../core/models/user.model';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, SidebarComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
-  private authService = inject(AuthService);
-  private router = inject(Router);
-  private http = inject(HttpClient);
+export class DashboardComponent implements OnInit {
+  public authService = inject(AuthService);
+  private statsService = inject(StatsService);
+  private eventService = inject(EventService);
+  private bookingService = inject(BookingService);
 
-  currentUser = this.authService.currentUser;
-  isOrganizer = this.authService.isOrganizer;
-  dashboardStats: any = null;
-  isLoading = true;
+  currentUser: User | null = null;
+  isOrganizer = false;
 
-  constructor() {
+  dashboardStats: DashboardStats | null = null;
+  myEvents: Event[] = [];
+  recentBookings: Booking[] = [];
+  myTickets: Booking[] = [];
+  upcomingEvents: Event[] = [];
+
+  ngOnInit() {
+    this.currentUser = this.authService.currentUser;
+    this.isOrganizer = this.authService.isOrganizer;
+
     if (this.isOrganizer) {
-      this.loadDashboardStats();
+      this.loadOrganizerData();
     } else {
-      this.isLoading = false;
+      this.loadParticipantData();
     }
   }
 
-  loadDashboardStats() {
-    this.http.get(`${environment.apiUrl}/stats/dashboard/`).subscribe({
-      next: (stats: any) => {
+  loadOrganizerData() {
+    this.statsService.getDashboardStats().subscribe({
+      next: (stats) => {
         this.dashboardStats = stats;
-        this.isLoading = false;
       },
-      error: (error: any) => {
-        console.error('Error loading dashboard stats:', error);
-        this.isLoading = false;
-      }
+      error: (err) => console.error('Error loading stats:', err)
+    });
+
+    this.eventService.getMyEvents().subscribe({
+      next: (events) => {
+        this.myEvents = events.slice(0, 5);
+      },
+      error: (err) => console.error('Error loading events:', err)
+    });
+
+    this.bookingService.getBookings().subscribe({
+      next: (bookings) => {
+        this.recentBookings = bookings.slice(0, 10);
+      },
+      error: (err) => console.error('Error loading bookings:', err)
     });
   }
 
-  logout() {
-    this.authService.logout();
+  loadParticipantData() {
+    this.bookingService.getWallet().subscribe({
+      next: (tickets) => {
+        this.myTickets = tickets;
+      },
+      error: (err) => console.error('Error loading tickets:', err)
+    });
+
+    this.eventService.getEvents().subscribe({
+      next: (response) => {
+        this.upcomingEvents = response.results.slice(0, 3);
+      },
+      error: (err) => console.error('Error loading events:', err)
+    });
+  }
+
+  getStatusClass(status: string): string {
+    switch(status) {
+      case 'confirmed': return 'status-confirmed';
+      case 'pending': return 'status-pending';
+      case 'cancelled': return 'status-cancelled';
+      default: return '';
+    }
+  }
+
+  getStatusText(status: string): string {
+    switch(status) {
+      case 'confirmed': return 'CONFIRMÉ';
+      case 'pending': return 'EN ATTENTE';
+      case 'cancelled': return 'ANNULÉ';
+      default: return status;
+    }
   }
 }

@@ -1,0 +1,528 @@
+.event-detail-container {
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+.event-hero {
+  height: 60vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 48px 64px;
+  color: white;
+}
+
+.event-category {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.hero-content h1 {
+  font-family: 'EB Garamond', serif;
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  max-width: 800px;
+}
+
+.event-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.event-meta span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-content {
+  max-width: 1280px;
+  margin: -40px auto 0;
+  padding: 0 24px 64px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 48px;
+  position: relative;
+  z-index: 2;
+}
+
+.main-info {
+  background: var(--surface-container);
+  border-radius: 10px;
+  padding: 32px;
+}
+
+.description-section h2,
+.info-grid h3,
+.ticket-sidebar h2 {
+  font-family: 'EB Garamond', serif;
+  font-size: 24px;
+  color: var(--on-surface);
+  margin-bottom: 16px;
+}
+
+.description-section p {
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.info-card {
+  background: var(--surface-container-low);
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 3px solid var(--primary);
+}
+
+.info-card h3 {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.info-card p {
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface);
+  font-size: 14px;
+}
+
+.progress-section {
+  margin-top: 32px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface);
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--surface-container-high);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  margin-top: 8px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+.ticket-sidebar {
+  background: var(--surface-container);
+  border-radius: 10px;
+  padding: 24px;
+  position: sticky;
+  top: 24px;
+  height: fit-content;
+}
+
+.ticket-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--surface-container-high);
+}
+
+.ticket-info {
+  flex: 1;
+}
+
+.ticket-name {
+  font-family: 'EB Garamond', serif;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.ticket-price {
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.ticket-remaining {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+.ticket-quantity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ticket-quantity button {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--surface-container-high);
+  color: var(--on-surface);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.ticket-quantity button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ticket-quantity span {
+  min-width: 24px;
+  text-align: center;
+  font-family: 'Hanken Grotesk', sans-serif;
+}
+
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  margin-top: 16px;
+  border-top: 2px solid var(--primary);
+}
+
+.total-label {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--on-surface-variant);
+}
+
+.total-amount {
+  font-family: 'EB Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.btn-reserve {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  border: none;
+  border-radius: 10px;
+  color: var(--on-primary);
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 16px 0;
+}
+
+.btn-reserve:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.help-text {
+  text-align: center;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+.event-status-message {
+  text-align: center;
+  padding: 32px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 18px;
+  color: var(--error);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  max-width: 600px;
+  width: 90%;
+  background: var(--surface-container);
+  border-radius: 10px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--surface-container-high);
+}
+
+.modal-header h2 {
+  font-family: 'EB Garamond', serif;
+  color: var(--on-surface);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--on-surface-variant);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-container-high);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface-variant);
+}
+
+.step.active {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: var(--surface-container-high);
+}
+
+.step-labels {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.step-labels span {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--on-surface-variant);
+}
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--surface-container-low);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-option.selected {
+  border-color: var(--primary);
+  background: var(--surface-container);
+}
+
+.payment-option input {
+  display: none;
+}
+
+.payment-icon {
+  font-size: 32px;
+}
+
+.payment-info {
+  flex: 1;
+}
+
+.payment-info strong {
+  display: block;
+  font-family: 'Hanken Grotesk', sans-serif;
+  color: var(--on-surface);
+}
+
+.payment-info span {
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+.fee {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--success);
+}
+
+.form-group {
+  margin: 20px 0;
+}
+
+.form-group label {
+  display: block;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--on-surface-variant);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--surface-container-high);
+  border-radius: 7px;
+  color: var(--on-surface);
+}
+
+.total-payment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--surface-container-low);
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.total-payment strong {
+  font-family: 'EB Garamond', serif;
+  font-size: 28px;
+  color: var(--primary);
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-back, .btn-pay {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--surface-container-high);
+  color: var(--on-surface);
+}
+
+.btn-pay {
+  background: var(--primary);
+  border: none;
+  color: var(--on-primary);
+}
+
+.btn-pay:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--surface-container-high);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 968px) {
+  .event-content {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-content h1 {
+    font-size: 32px;
+  }
+
+  .hero-content {
+    padding: 24px;
+  }
+}
