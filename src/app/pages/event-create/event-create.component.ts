@@ -47,12 +47,14 @@ export class EventCreateComponent implements OnInit {
   }
 
   loadCategories() {
+    console.log('Chargement des catégories...');
     this.eventService.getCategories().subscribe({
       next: (categories) => {
+        console.log('Catégories chargées:', categories);
         this.categories = categories;
       },
       error: (err) => {
-        console.error('Error loading categories:', err);
+        console.error('Erreur chargement catégories:', err);
         this.categories = [
           { id: 1, name: 'Musique', slug: 'musique' },
           { id: 2, name: 'Gala', slug: 'gala' },
@@ -63,31 +65,63 @@ export class EventCreateComponent implements OnInit {
   }
 
   nextStep() {
+    console.log('Step suivant, actuel:', this.currentStep);
+    
     if (this.currentStep === 1) {
-      if (!this.eventData.title || !this.eventData.description || !this.eventData.location) {
-        this.notificationService.showError('Veuillez remplir tous les champs obligatoires');
+      // Validation étape 1
+      if (!this.eventData.title) {
+        this.notificationService.showError('Titre requis');
+        return;
+      }
+      if (!this.eventData.description) {
+        this.notificationService.showError('Description requise');
+        return;
+      }
+      if (!this.eventData.location) {
+        this.notificationService.showError('Lieu requis');
         return;
       }
       if (!this.eventData.date) {
-        this.notificationService.showError('Veuillez sélectionner une date');
+        this.notificationService.showError('Date requise');
         return;
       }
       if (!this.eventData.time) {
-        this.notificationService.showError('Veuillez sélectionner une heure');
+        this.notificationService.showError('Heure requise');
         return;
       }
       if (this.eventData.capacity <= 0) {
-        this.notificationService.showError('La capacité doit être supérieure à 0');
+        this.notificationService.showError('Capacité doit être supérieure à 0');
         return;
       }
-      this.currentStep++;
+      
+      console.log('Étape 1 validée');
+      this.currentStep = 2;
     } 
     else if (this.currentStep === 2) {
       if (this.ticketData.length === 0) {
         this.notificationService.showError('Ajoutez au moins un type de billet');
         return;
       }
-      this.currentStep++;
+      
+      // Vérifier chaque billet
+      for (let i = 0; i < this.ticketData.length; i++) {
+        const ticket = this.ticketData[i];
+        if (!ticket.name) {
+          this.notificationService.showError(`Billet ${i+1}: Nom requis`);
+          return;
+        }
+        if (ticket.price <= 0) {
+          this.notificationService.showError(`Billet ${i+1}: Prix doit être supérieur à 0`);
+          return;
+        }
+        if (ticket.quantity <= 0) {
+          this.notificationService.showError(`Billet ${i+1}: Quantité doit être supérieure à 0`);
+          return;
+        }
+      }
+      
+      console.log('Étape 2 validée');
+      this.currentStep = 3;
     }
   }
 
@@ -98,7 +132,7 @@ export class EventCreateComponent implements OnInit {
   }
 
   addTicketType() {
-    this.ticketData.push({ name: 'Nouveau billet', price: 0, quantity: 10 });
+    this.ticketData.push({ name: 'Nouveau billet', price: 5000, quantity: 50 });
   }
 
   removeTicketType(index: number) {
@@ -110,6 +144,12 @@ export class EventCreateComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log('=== DÉBUT CRÉATION ÉVÉNEMENT ===');
+    console.log('Données événement:', this.eventData);
+    console.log('Types de billets:', this.ticketData);
+    console.log('Mode publication:', this.publishMode);
+    
+    // Validation finale
     if (!this.eventData.title) {
       this.notificationService.showError('Titre requis');
       return;
@@ -141,6 +181,7 @@ export class EventCreateComponent implements OnInit {
 
     this.isLoading = true;
     
+    // Construire FormData
     const formData = new FormData();
     formData.append('title', this.eventData.title);
     formData.append('description', this.eventData.description);
@@ -162,16 +203,18 @@ export class EventCreateComponent implements OnInit {
       formData.append('is_online', 'false');
     }
 
-    // ✅ Correction ici - pas de Object.fromEntries
-    console.log('Envoi des données:');
+    // Afficher les données envoyées
+    console.log('FormData envoyé:');
     (formData as any).forEach((value: any, key: string) => {
-      console.log(key + ': ' + value);
+      console.log(`  ${key}: ${value}`);
     });
 
+    // Appel API
     this.eventService.createEvent(formData).subscribe({
       next: (event) => {
-        console.log('Événement créé:', event);
+        console.log('✅ Événement créé avec succès:', event);
         
+        // Créer les billets
         if (this.ticketData.length === 0) {
           this.notificationService.showSuccess('Événement créé avec succès !');
           this.router.navigate(['/events', event.id]);
@@ -180,7 +223,11 @@ export class EventCreateComponent implements OnInit {
         }
         
         let completed = 0;
-        this.ticketData.forEach((ticket) => {
+        let hasError = false;
+        
+        this.ticketData.forEach((ticket, index) => {
+          console.log(`Création billet ${index + 1}:`, ticket);
+          
           this.ticketTypeService.createTicketType({
             name: ticket.name,
             price: ticket.price,
@@ -189,14 +236,17 @@ export class EventCreateComponent implements OnInit {
           }).subscribe({
             next: () => {
               completed++;
-              if (completed === this.ticketData.length) {
-                this.notificationService.showSuccess('Événement créé avec succès !');
+              console.log(`Billet ${index + 1} créé (${completed}/${this.ticketData.length})`);
+              
+              if (completed === this.ticketData.length && !hasError) {
+                this.notificationService.showSuccess('Événement et billets créés avec succès !');
                 this.router.navigate(['/events', event.id]);
                 this.isLoading = false;
               }
             },
             error: (err) => {
-              console.error('Erreur création billet:', err);
+              console.error(`❌ Erreur création billet ${index + 1}:`, err);
+              hasError = true;
               this.isLoading = false;
               this.notificationService.showError('Erreur lors de la création des billets');
             }
@@ -204,9 +254,19 @@ export class EventCreateComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.error('Erreur création événement:', err);
+        console.error('❌ Erreur création événement:', err);
         this.isLoading = false;
-        this.notificationService.showError('Erreur lors de la création de l\'événement');
+        
+        // Message d'erreur plus précis
+        if (err.status === 0) {
+          this.notificationService.showError('Impossible de contacter le serveur. Vérifiez que le backend est en ligne.');
+        } else if (err.status === 401) {
+          this.notificationService.showError('Non authentifié. Veuillez vous reconnecter.');
+        } else if (err.status === 403) {
+          this.notificationService.showError('Vous n\'avez pas les droits pour créer un événement.');
+        } else {
+          this.notificationService.showError(err.error?.detail || 'Erreur lors de la création');
+        }
       }
     });
   }
