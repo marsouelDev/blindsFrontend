@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of, delay } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Event, EventCreate, EventUpdate, Category } from '../models/event.model';
 import { environment } from '../../../environments/environment';
 
@@ -24,12 +25,16 @@ export class EventService {
     return this.http.get<Event>(`${this.apiUrl}/events/${id}/`);
   }
 
-  createEvent(data: FormData): Observable<Event> {
-    return this.http.post<Event>(`${this.apiUrl}/events/`, data);
+  createEvent(data: any): Observable<Event> {
+    return this.http.post<Event>(`${this.apiUrl}/events/`, data, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  updateEvent(id: number, data: FormData): Observable<Event> {
-    return this.http.put<Event>(`${this.apiUrl}/events/${id}/`, data);
+  updateEvent(id: number, data: any): Observable<Event> {
+    return this.http.put<Event>(`${this.apiUrl}/events/${id}/`, data, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   deleteEvent(id: number): Observable<void> {
@@ -48,19 +53,10 @@ export class EventService {
     return this.http.post<{ detail: string }>(`${this.apiUrl}/events/${id}/cancel/`, {});
   }
 
-  // Categories avec données mockées (quand l'API est indisponible)
+  //  Gère les deux cas : tableau direct ou réponse paginée {results: [...]}
   getCategories(): Observable<Category[]> {
-    // DÉCOMMENTER POUR UTILISER L'API REELLE
-    // return this.http.get<Category[]>(`${this.apiUrl}/categories/`);
-
-    // DONNÉES MOCKÉES POUR LE TEST (à supprimer quand l'API fonctionne)
-    return of([
-      { id: 1, name: 'Musique', slug: 'musique' },
-      { id: 2, name: 'Gala', slug: 'gala' },
-      { id: 3, name: 'Culture', slug: 'culture' },
-      { id: 4, name: 'Sport', slug: 'sport' },
-      { id: 5, name: 'Conférence', slug: 'conference' },
-      { id: 6, name: 'Festival', slug: 'festival' }
-    ]).pipe(delay(500));
+    return this.http.get<any>(`${this.apiUrl}/categories/`).pipe(
+      map(response => Array.isArray(response) ? response : (response.results ?? []))
+    );
   }
 }
