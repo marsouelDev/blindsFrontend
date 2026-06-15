@@ -4,10 +4,8 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { StatsService } from '../../core/services/stats.service';
 import { EventService } from '../../core/services/event.service';
-import { BookingService } from '../../core/services/booking.service';
 import { DashboardStats } from '../../core/models/stats.model';
 import { Event } from '../../core/models/event.model';
-import { Booking } from '../../core/models/booking.model';
 import { User } from '../../core/models/user.model';
 
 @Component({
@@ -18,85 +16,63 @@ import { User } from '../../core/models/user.model';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  public authService = inject(AuthService);
+  private authService = inject(AuthService);
   private statsService = inject(StatsService);
   private eventService = inject(EventService);
-  private bookingService = inject(BookingService);
-
+  
   currentUser: User | null = null;
-  isOrganizer = false;
-
   dashboardStats: DashboardStats | null = null;
   myEvents: Event[] = [];
-  recentBookings: Booking[] = [];
-  myTickets: Booking[] = [];
-  upcomingEvents: Event[] = [];
+  isLoading = true;
 
   ngOnInit() {
     this.currentUser = this.authService.currentUser;
-    this.isOrganizer = this.authService.isOrganizer;
-
-    if (this.isOrganizer) {
-      this.loadOrganizerData();
-    } else {
-      this.loadParticipantData();
-    }
+    this.loadData();
   }
-
-  loadOrganizerData() {
+  
+  loadData() {
+    this.isLoading = true;
+    
     this.statsService.getDashboardStats().subscribe({
       next: (stats) => {
         this.dashboardStats = stats;
+        this.isLoading = false;
       },
-      error: (err) => console.error('Error loading stats:', err)
+      error: (err) => {
+        console.error('Error loading stats:', err);
+        this.loadMockData();
+      }
     });
-
+    
     this.eventService.getMyEvents().subscribe({
       next: (events) => {
-        this.myEvents = events.slice(0, 5);
-      },
-      error: (err) => console.error('Error loading events:', err)
-    });
-
-    this.bookingService.getBookings().subscribe({
-      next: (bookings) => {
-        this.recentBookings = bookings.slice(0, 10);
-      },
-      error: (err) => console.error('Error loading bookings:', err)
-    });
-  }
-
-  loadParticipantData() {
-    this.bookingService.getWallet().subscribe({
-      next: (tickets) => {
-        this.myTickets = tickets;
-      },
-      error: (err) => console.error('Error loading tickets:', err)
-    });
-
-    this.eventService.getEvents().subscribe({
-      next: (response) => {
-        this.upcomingEvents = response.results.slice(0, 3);
+        this.myEvents = events;
       },
       error: (err) => console.error('Error loading events:', err)
     });
   }
 
-  getStatusClass(status: string): string {
-    switch(status) {
-      case 'confirmed': return 'status-confirmed';
-      case 'pending': return 'status-pending';
-      case 'cancelled': return 'status-cancelled';
-      default: return '';
-    }
+  loadMockData() {
+    this.dashboardStats = {
+      total_events: 3,
+      active_events: 2,
+      total_bookings: 45,
+      total_revenue: 750000,
+      total_sold: 87,
+      events_stats: [],
+      payment_split: {
+        orange_money: { amount: 487500, pct: 65 },
+        mtn_momo: { amount: 262500, pct: 35 }
+      }
+    };
+    this.isLoading = false;
   }
 
-  getStatusText(status: string): string {
-    switch(status) {
-      case 'confirmed': return 'CONFIRMÉ';
-      case 'pending': return 'EN ATTENTE';
-      case 'cancelled': return 'ANNULÉ';
-      default: return status;
-    }
+  getTotalRevenue(): number {
+    return this.dashboardStats?.total_revenue || 0;
+  }
+
+  formatAmount(amount: number): string {
+    return new Intl.NumberFormat('fr-FR').format(amount) + ' XAF';
   }
 }

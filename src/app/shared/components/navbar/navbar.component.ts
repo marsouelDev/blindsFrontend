@@ -1,38 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { inject } from '@angular/core';
+import { NotificationService } from '../../../core/services/notification.service';
+import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   private authService = inject(AuthService);
-  isMenuOpen = false;
+  private router = inject(Router);
+  private notificationService = inject(NotificationService);
 
-  get isAuthenticated() {
-    return this.authService.isAuthenticated;
+  currentUser: User | null = null;
+  isAuthenticated = false;
+  isOrganizer = false;
+  mobileMenuOpen = false;
+
+  ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.isAuthenticated = !!user;
+      this.isOrganizer = user?.profile?.role === 'organizer';
+    });
   }
 
-  get currentUser() {
-    return this.authService.currentUser;
-  }
-
-  get isOrganizer() {
-    return this.authService.isOrganizer;
-  }
-
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
   logout() {
-    this.authService.logout();
-    this.isMenuOpen = false;
+    this.authService.logout().subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Déconnexion réussie');
+        this.router.navigate(['/home']);
+      },
+      error: () => {
+        localStorage.clear();
+        window.location.href = '/home';
+      }
+    });
   }
 }

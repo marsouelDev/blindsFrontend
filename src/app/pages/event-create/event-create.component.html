@@ -4,126 +4,167 @@
     <p>Remplissez les informations ci-dessous pour créer votre événement</p>
   </div>
 
+  <!-- Indicateur d'étape -->
   <div class="steps-indicator">
     <div class="step" [class.active]="currentStep === 1">
-      <span>1</span> Informations
+      <span class="step-num">1</span>
+      <span class="step-label">Informations</span>
     </div>
+    <div class="step-line" [class.active]="currentStep > 1"></div>
     <div class="step" [class.active]="currentStep === 2">
-      <span>2</span> Billets
+      <span class="step-num">2</span>
+      <span class="step-label">Billets</span>
     </div>
+    <div class="step-line" [class.active]="currentStep > 2"></div>
     <div class="step" [class.active]="currentStep === 3">
-      <span>3</span> Publication
+      <span class="step-num">3</span>
+      <span class="step-label">Publication</span>
     </div>
   </div>
 
-  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
-    <!-- Step 1: Event Info -->
-    <div class="form-section" *ngIf="currentStep === 1">
-      <h2>Informations de l'événement</h2>
+  <!-- ÉTAPE 1 : Informations générales -->
+  <div class="form-step" *ngIf="currentStep === 1">
+    <div class="form-card">
+      <h2>Informations générales</h2>
 
       <div class="form-group">
         <label>Titre de l'événement *</label>
-        <input type="text" formControlName="title" placeholder="Ex: Concert Jazz 2024">
+        <input type="text" [(ngModel)]="eventData.title" placeholder="Ex: Concert Jazz 2024">
+        <div class="error" *ngIf="!eventData.title && eventData.title !== undefined">
+          Titre requis
+        </div>
       </div>
 
       <div class="form-group">
         <label>Description *</label>
-        <textarea formControlName="description" rows="5" placeholder="Décrivez votre événement..."></textarea>
+        <textarea [(ngModel)]="eventData.description" rows="5" placeholder="Décrivez votre événement..."></textarea>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Lieu *</label>
-          <input type="text" formControlName="location" placeholder="Ex: Palais des Congrès, Yaoundé">
+          <input type="text" [(ngModel)]="eventData.location" placeholder="Ex: Palais des Congrès, Yaoundé">
         </div>
         <div class="form-group">
           <label>Capacité *</label>
-          <input type="number" formControlName="capacity" min="1" placeholder="Nombre de places">
+          <input type="number" [(ngModel)]="eventData.capacity" min="1" placeholder="Nombre de places">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Date *</label>
-          <input type="date" formControlName="date">
+          <input type="date" [(ngModel)]="eventData.date">
         </div>
         <div class="form-group">
           <label>Heure *</label>
-          <input type="time" formControlName="time">
+          <input type="time" [(ngModel)]="eventData.time">
         </div>
       </div>
 
       <div class="form-group">
         <label>Catégorie</label>
-        <select formControlName="category_id">
-          <option [value]="null">Sélectionnez une catégorie</option>
-          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        <select [(ngModel)]="eventData.category_id">
+          <option [ngValue]="null">Sélectionnez une catégorie</option>
+          <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
         </select>
       </div>
 
-      <div class="checkbox-group">
+      <div class="form-checkbox">
         <label>
-          <input type="checkbox" formControlName="is_online">
+          <input type="checkbox" [(ngModel)]="eventData.is_online">
           Événement en ligne
         </label>
       </div>
 
-      <div class="form-group" *ngIf="eventForm.get('is_online')?.value">
+      <div class="form-group" *ngIf="eventData.is_online">
         <label>Lien de l'événement</label>
-        <input type="url" formControlName="online_link" placeholder="https://...">
+        <input type="url" [(ngModel)]="eventData.online_link" placeholder="https://...">
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn-next" (click)="nextStep()">Suivant →</button>
-      </div>
-    </div>
-
-    <!-- Step 2: Ticket Types -->
-   <div class="ticket-types-list" *ngIf="ticketTypes.length > 0">
-  <div *ngFor="let ticket of ticketTypes.controls; let i = index" [formGroupName]="i" class="ticket-type-card">
-    <div class="ticket-header">
-      <h3>Billet {{ i + 1 }}</h3>
-      <button type="button" class="btn-remove" (click)="removeTicketType(i)">×</button>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nom du billet</label>
-        <input type="text" formControlName="name" placeholder="Ex: Standard, VIP">
-      </div>
-      <div class="form-group">
-        <label>Prix (XAF)</label>
-        <input type="number" formControlName="price" min="0">
-      </div>
-      <div class="form-group">
-        <label>Quantité</label>
-        <input type="number" formControlName="quantity" min="1">
-      </div>
-    </div>
-  </div>
-</div>
-    <!-- Step 3: Publish -->
-    <div class="form-section" *ngIf="currentStep === 3">
-      <h2>Publication</h2>
-
-      <div class="publish-options">
-        <div class="option-card" (click)="eventForm.patchValue({ status: 'draft' })" [class.selected]="eventForm.get('status')?.value === 'draft'">
-          <span>📝</span>
-          <h3>Brouillon</h3>
-          <p>Sauvegarder comme brouillon, publication plus tard</p>
-        </div>
-        <div class="option-card" (click)="eventForm.patchValue({ status: 'published' })" [class.selected]="eventForm.get('status')?.value === 'published'">
-          <span>🚀</span>
-          <h3>Publier maintenant</h3>
-          <p>L'événement sera visible immédiatement</p>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn-prev" (click)="prevStep()">← Précédent</button>
-        <button type="submit" class="btn-submit" [disabled]="isLoading">
-          {{ isLoading ? 'Création...' : 'Créer l\'événement' }}
+        <button type="button" class="btn-next" (click)="nextStep()">
+          Suivant →
         </button>
       </div>
     </div>
-  </form>
+  </div>
+
+  <!-- ÉTAPE 2 : Types de billets -->
+  <div class="form-step" *ngIf="currentStep === 2">
+    <div class="form-card">
+      <h2>Types de billets</h2>
+      <p>Définissez les différents types de billets pour cet événement</p>
+
+      <div class="ticket-types-list">
+        <div *ngFor="let ticket of ticketData; let i = index" class="ticket-card">
+          <div class="ticket-header">
+            <h3>Billet {{ i + 1 }}</h3>
+            <button type="button" class="btn-remove" (click)="removeTicketType(i)">✕</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom du billet</label>
+              <input type="text" [(ngModel)]="ticket.name" placeholder="Ex: Standard, VIP">
+            </div>
+            <div class="form-group">
+              <label>Prix (XAF)</label>
+              <input type="number" [(ngModel)]="ticket.price" min="0">
+            </div>
+            <div class="form-group">
+              <label>Quantité disponible</label>
+              <input type="number" [(ngModel)]="ticket.quantity" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn-add-ticket" (click)="addTicketType()">
+        + Ajouter un type de billet
+      </button>
+
+      <div class="form-actions">
+        <button type="button" class="btn-prev" (click)="prevStep()">
+          ← Précédent
+        </button>
+        <button type="button" class="btn-next" (click)="nextStep()">
+          Suivant →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 3 : Publication -->
+  <div class="form-step" *ngIf="currentStep === 3">
+    <div class="form-card">
+      <h2>Publication</h2>
+      <p>Choisissez quand publier votre événement</p>
+
+      <div class="publish-options">
+        <div class="option" [class.selected]="publishMode === 'draft'" (click)="publishMode = 'draft'">
+          <div class="option-icon">📝</div>
+          <div class="option-info">
+            <h3>Brouillon</h3>
+            <p>Sauvegarder comme brouillon, publication plus tard</p>
+          </div>
+        </div>
+        <div class="option" [class.selected]="publishMode === 'published'" (click)="publishMode = 'published'">
+          <div class="option-icon">🚀</div>
+          <div class="option-info">
+            <h3>Publier maintenant</h3>
+            <p>L'événement sera visible immédiatement</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-prev" (click)="prevStep()">
+          ← Précédent
+        </button>
+        <button type="button" class="btn-submit" (click)="onSubmit()" [disabled]="isLoading">
+          {{ isLoading ? 'Création en cours...' : 'Créer l\'événement' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

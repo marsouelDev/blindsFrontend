@@ -1,10 +1,85 @@
-<div class="payment-chart">
-  <div class="payment-bar">
-    <div class="bar orange" [style.width.%]="(dashboardStats?.payment_split?.orange_money?.pct || 0)"></div>
-    <div class="bar mtn" [style.width.%]="(dashboardStats?.payment_split?.mtn_momo?.pct || 0)"></div>
+<div class="dashboard-container" *ngIf="!isLoading; else loading">
+  <div class="dashboard-header">
+    <div>
+      <h1>Tableau de bord</h1>
+      <p>Bienvenue, {{ currentUser?.first_name || currentUser?.username }}</p>
+    </div>
+   <div class="header-actions">
+  <a routerLink="/events/create" class="btn-primary">+ Nouvel événement</a>
+</div>
   </div>
-  <div class="payment-labels">
-    <span class="orange-label">Orange Money {{ dashboardStats?.payment_split?.orange_money?.pct || 0 }}%</span>
-    <span class="mtn-label">MTN MoMo {{ dashboardStats?.payment_split?.mtn_momo?.pct || 0 }}%</span>
+
+  <!-- Cartes statistiques -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-info">
+        <h3>{{ dashboardStats?.total_events || 0 }}</h3>
+        <p>Événements</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🎫</div>
+      <div class="stat-info">
+        <h3>{{ dashboardStats?.total_sold || 0 }}</h3>
+        <p>Billets vendus</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-info">
+        <h3>{{ formatAmount(getTotalRevenue()) }}</h3>
+        <p>Revenus</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Répartition paiements -->
+  <div class="payment-section">
+    <h2>Répartition des paiements</h2>
+    <div class="payment-bar">
+      <div class="bar orange" [style.width.%]="dashboardStats?.payment_split?.orange_money?.pct || 0"></div>
+      <div class="bar mtn" [style.width.%]="dashboardStats?.payment_split?.mtn_momo?.pct || 0"></div>
+    </div>
+    <div class="payment-details">
+      <div class="payment-item">
+        <span class="color orange"></span> Orange Money: {{ formatAmount(dashboardStats?.payment_split?.orange_money?.amount || 0) }} ({{ dashboardStats?.payment_split?.orange_money?.pct || 0 }}%)
+      </div>
+      <div class="payment-item">
+        <span class="color mtn"></span> MTN MoMo: {{ formatAmount(dashboardStats?.payment_split?.mtn_momo?.amount || 0) }} ({{ dashboardStats?.payment_split?.mtn_momo?.pct || 0 }}%)
+      </div>
+    </div>
+  </div>
+
+  <!-- Mes événements -->
+  <div class="events-section">
+    <div class="section-header">
+      <h2>Mes événements</h2>
+    </div>
+    <div class="events-list">
+      <div class="event-row" *ngFor="let event of myEvents">
+        <div class="event-info">
+          <h4>{{ event.title }}</h4>
+          <p>{{ event.date | date:'dd MMMM yyyy' }} • {{ event.location }}</p>
+        </div>
+        <div class="event-stats">
+          <span class="sold">{{ event.tickets_sold }}/{{ event.capacity }} billets</span>
+          <span class="revenue">{{ formatAmount(event.min_price * event.tickets_sold) }}</span>
+          <a [routerLink]="['/events', event.id]" class="btn-view">Voir</a>
+          <a [routerLink]="['/events', event.id, 'edit']" class="btn-edit">Modifier</a>
+        </div>
+      </div>
+      <div class="no-events" *ngIf="myEvents.length === 0">
+        <p>Aucun événement créé pour le moment.</p>
+        <a routerLink="/events/create" class="btn-primary">Créer mon premier événement</a>
+      </div>
+    </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+</ng-template>

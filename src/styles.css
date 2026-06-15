@@ -1,41 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
-@import 'ngx-toastr/toastr';
 
 :root {
   /* Brand Colors */
   --primary: #C9A84C;
-  --primary-container: #E6C364;
+  --primary-dark: #B8922A;
+  --primary-light: #E6C364;
   --on-primary: #3d2e00;
-  --on-primary-container: #503d00;
 
-  /* Surface Colors - Dark Mode */
+  /* Surface Colors */
   --surface: #131314;
-  --surface-dim: #131314;
-  --surface-bright: #3a393a;
-  --surface-container-lowest: #0e0e0f;
-  --surface-container-low: #1c1b1c;
   --surface-container: #201f20;
+  --surface-container-low: #1c1b1c;
   --surface-container-high: #2a2a2b;
-  --surface-container-highest: #353436;
 
   /* On Surface Colors */
   --on-surface: #e5e2e3;
   --on-surface-variant: #d0c5b2;
-
-  /* Outline */
-  --outline: #99907e;
-  --outline-variant: #4d4637;
 
   /* Payment Colors */
   --orange-money: #FF6600;
   --mtn-momo: #FFCC00;
   --success: #1D9E75;
   --error: #E24B4A;
-
-  /* Spacing */
-  --spacing-unit: 8px;
-  --container-max: 1280px;
-  --gutter: 24px;
 }
 
 * {
@@ -45,36 +31,47 @@
 }
 
 body {
+  font-family: 'Hanken Grotesk', sans-serif;
   background: var(--surface);
   color: var(--on-surface);
-  font-family: 'Hanken Grotesk', sans-serif;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'EB Garamond', serif;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--surface-container-low);
-}
-
-::-webkit-scrollbar-thumb {
+/* Boutons */
+.btn-primary {
   background: var(--primary);
-  border-radius: 4px;
+  color: var(--on-primary);
+  padding: 12px 32px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-container);
+.btn-secondary {
+  background: transparent;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  padding: 12px 32px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease-out;
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
 }

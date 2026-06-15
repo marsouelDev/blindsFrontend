@@ -1,0 +1,45 @@
+<div class="wallet-container">
+  <div class="wallet-header">
+    <h1>Mes billets</h1>
+    <p>Retrouvez vos accès exclusifs pour les événements à venir.</p>
+  </div>
+
+  <div class="tickets-list" *ngIf="!isLoading && tickets.length > 0; else empty">
+    <div class="ticket-card" *ngFor="let ticket of tickets">
+      <div class="ticket-left">
+        <div class="ticket-icon">🎫</div>
+        <div class="ticket-info">
+          <h3>{{ ticket.event_title }}</h3>
+          <p>{{ ticket.event_location }}</p>
+          <p>{{ ticket.event_date | date:'EEEE dd MMMM yyyy' }} à {{ ticket.event_time }}</p>
+          <div class="ticket-type" *ngFor="let item of ticket.items">
+            <span class="type-name">{{ item.ticket_type_name }}</span>
+            <span class="type-qty">x{{ item.quantity }}</span>
+            <span class="type-price">{{ item.unit_price | number }} XAF</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ticket-right">
+        <div class="ticket-status confirmed">✓ CONFIRMÉ</div>
+        <div class="ticket-qr">
+          <img [src]="'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + ticket.payment_ref" alt="QR Code">
+        </div>
+        <div class="ticket-ref">
+          <small>RÉFÉRENCE</small>
+          <strong>{{ ticket.payment_ref }}</strong>
+        </div>
+        <a [routerLink]="['/ticket', ticket.id]" class="btn-view">Voir le billet →</a>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <div class="empty-state">
+      <div class="empty-icon">🎫</div>
+      <h3>Aucun billet trouvé</h3>
+      <p>Vous n'avez pas encore de billets.</p>
+      <a routerLink="/events" class="btn-primary">Explorer les événements</a>
+    </div>
+  </ng-template>
+</div>
